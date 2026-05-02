@@ -1,0 +1,15 @@
+{
+  "name": "hack-openagents",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "start": "pnpm --filter web start",
+    "lint": "pnpm --filter web lint",
+    "contracts:build": "forge build --root contracts",
+    "contracts:test": "forge test --root contracts -vv",
+    "contracts:deploy": "forge script contracts/script/Deploy.s.sol --rpc-url $OG_RPC_URL --broadcast --root contracts"
+  },
+  "packageManager": "pnpm@9.12.0"
+}
