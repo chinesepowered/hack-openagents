@@ -49,11 +49,14 @@ export async function runAnalyst(strategyId: string): Promise<TradeProposal> {
     expectedSlippageBps: 0
   };
 
+  // 100 units in token's smallest denomination. Stables here are 6 decimals
+  // (mUSDC/mUSDT), so 100 * 1e6.
+  const TRADE_AMOUNT = "100000000";
   const proposal: TradeProposal = {
     strategyId,
     fromToken: strategy.pair.base,
     toToken: strategy.pair.quote,
-    amountIn: decision.side === "hold" ? "0" : "100",
+    amountIn: decision.side === "hold" ? "0" : TRADE_AMOUNT,
     rationale: decision.rationale,
     expectedSlippageBps: decision.expectedSlippageBps ?? 5,
     inferenceReceipt: inference.receipt

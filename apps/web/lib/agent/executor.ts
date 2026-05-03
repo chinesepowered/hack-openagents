@@ -18,6 +18,9 @@ const DEMO_USDC = (process.env.NEXT_PUBLIC_DEMO_ASSET_ADDRESS ??
 const DEMO_USDT = (process.env.NEXT_PUBLIC_DEMO_USDT_ADDRESS ??
   "0x0000000000000000000000000000000000000000") as `0x${string}`;
 
+const SWAP_RECIPIENT = (process.env.DEPLOYER_ADDRESS ??
+  "0x0000000000000000000000000000000000000000") as `0x${string}`;
+
 const SWAP_ABI = [
   {
     type: "function",
@@ -56,7 +59,7 @@ export async function runExecutor(proposal: TradeProposal) {
       proposal.amountIn,
       "0",
       onChainPath,
-      SETTLEMENT_ROUTER,
+      SWAP_RECIPIENT,
       Math.floor(Date.now() / 1000) + 300
     ],
     abi: SWAP_ABI as unknown as unknown[]
