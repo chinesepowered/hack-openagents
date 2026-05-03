@@ -31,13 +31,22 @@ export async function runAnalyst(strategyId: string): Promise<TradeProposal> {
     });
   }
 
+  const isStablePair =
+    ["USDC", "USDT", "DAI"].includes(strategy.pair.base) &&
+    ["USDC", "USDT", "DAI"].includes(strategy.pair.quote);
+
   const prompt = [
+    `You are the analyst for a small ($100 size) on-chain trading strategy.`,
     `Strategy: "${strategy.name}". Pair: ${strategy.pair.base}/${strategy.pair.quote}.`,
     `Recent decisions (most recent last): ${JSON.stringify(recentDecisions)}.`,
     liveQuote
       ? `Live Uniswap quote (1.0 ${strategy.pair.base} -> ${strategy.pair.quote}): amountOut=${liveQuote.amountOut}, priceImpact=${liveQuote.priceImpact}, route=${liveQuote.route}, gasFeeUsd=${liveQuote.gasFeeUsd}.`
       : `No live quote available; reason from memory.`,
-    `Decide one of {buy, sell, hold} and return only this JSON:`,
+    isStablePair
+      ? `Pair is stable-to-stable. Realistic slippage for $100 size is 1-10 bps. Risk gate rejects trades above 30 bps, so set expectedSlippageBps in the 3-15 range.`
+      : `Realistic slippage for $100 in this pair is typically 5-30 bps; risk gate rejects above 50 bps.`,
+    `Bias toward executing small trades to keep the strategy active. Only output "hold" if there is a clear reason from recent decisions.`,
+    `Return only this JSON, no prose:`,
     `{"side":"buy"|"sell"|"hold","rationale":string,"expectedSlippageBps":number}`
   ].join("\n");
 
